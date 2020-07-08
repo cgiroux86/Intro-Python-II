@@ -1,6 +1,22 @@
 from room import Room
+from player import Player
+import re
+import sys
+
+
+def command_parser():
+    print('parser called')
+    directions = ['north', 'east', 'south', 'west', 'n', 'e', 's', 'w']
+    d = input('Enter a direction: ')
+    if d.lower() == 'q':
+        print('Thnaks for playing!')
+        sys.exit(0)
+    while d.lower() not in directions:
+        d = input('Please enter a valid direction (North, n, etc: ')
+    return d.lower()
 
 # Declare all the rooms
+
 
 room = {
     'outside':  Room("Outside Cave Entrance",
@@ -22,7 +38,7 @@ earlier adventurers. The only exit is to the south."""),
 }
 
 
-# Link rooms together
+# # Link rooms together
 
 room['outside'].n_to = room['foyer']
 room['foyer'].s_to = room['outside']
@@ -39,6 +55,7 @@ room['treasure'].s_to = room['narrow']
 
 # Make a new player object that is currently in the 'outside' room.
 
+
 # Write a loop that:
 #
 # * Prints the current room name
@@ -49,3 +66,44 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+def find_room(p, d):
+    print('room called')
+    matched = d[0]
+    try:
+        if matched == 'n':
+            return p.n_to
+        elif matched == 'w':
+            return p.w_to
+        elif matched == 'e':
+            return p.e_to
+        else:
+            return p.s_to
+
+    except AttributeError:
+        print('cannot move in this direction')
+        r = find_room(p, command_parser())
+        return r
+
+
+def game():
+    print('Welcome to the best adventure game in town!\nYou can traverse rooms by entering a direction')
+    user = room['outside']
+    player = Player('outside')
+    while True:
+        r = f'{find_room(user, command_parser())}'
+        print(r)
+        x = re.split(' ', r)[1].lower().replace(',', '')
+        x = 'overlook' if x == 'grand' else x
+        user = room[x]
+        player.visit_room()
+        player.update_room(x)
+        print(player, user.item)
+
+        def decision():
+            i = input('Loot found in room! Pick up loot? y/m')
+            if i.lower() == 'y':
+                player.add_inv(user.item)
+        decision()
+
+
+game()
