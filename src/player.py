@@ -1,5 +1,7 @@
 # Write a class to hold player information, e.g. what room they are in
 # currently.
+
+
 class Player(object):
     def __init__(self, curr_room, item=[]):
         self.room = curr_room
@@ -17,7 +19,18 @@ class Player(object):
 
     def add_inv(self, loot):
         self.inventory = self.inventory + loot
+        print(f"you have picked up {loot}")
+
+    def drop_item(self, i):
+        self.inventory = list(map(lambda x: str(x), self.inventory))
+        self.inventory = [x for x in self.inventory if x != str(i)]
         print(self.inventory)
 
-    def drop_item(self, item):
-        self.iventory = self.inventory.remove(item)
+    def remove_item(self, item):
+        lst = []
+        for i in lst:
+            print(str(i) == str(item))
+            if str(item) in self.inventory and str(item) not in lst:
+                lst.append(i)
+        self.inventory = lst
+        print(self.inventory)

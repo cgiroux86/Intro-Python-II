@@ -86,9 +86,23 @@ def find_room(p, d):
 
 
 def game():
-    print('Welcome to the best adventure game in town!\nYou can traverse rooms by entering a direction')
+    print('Welcome to the best adventure game in town!\nYou can traverse rooms by entering a direction\nBy picking up loot, you can increase you health and surivival time in the game.\nTo win, have 3 treasure chests in your inventory before running out')
     user = room['outside']
     player = Player('outside')
+
+    def drop_item(item):
+        items = ['knife', 'sword', 'water', 'gun', 'painkiller',
+                 'bandage', 'cellphone', 'canned goods', 'treasure chest']
+        if item in items:
+            player.drop_item(item)
+        else:
+            item_to_drop = input(
+                f'Please select an item to drop from: {player.inventory}')
+            while item_to_drop not in items:
+                item_to_drop = input(
+                    f"Enter a valid item from your inventory: {player.inventory}")
+            return player.drop_item(item_to_drop)
+
     while True:
         r = f'{find_room(user, command_parser())}'
         print(r)
@@ -100,28 +114,22 @@ def game():
         print(player, user.inventory)
 
         def decision():
-            i = input('Loot found in room! Pick up loot? y/n')
-            if i.lower() == 'y' and len(player.inventory) < 6:
-                player.add_inv([u for u in user.inventory])
-            elif len(player.inventory) > 5:
+            i = input(
+                'Loot found in room! Pick up loot? Enter get or take followed by loot item: ')
+            if i.lower() == 'i':
+                print(player.inventory)
+            sp = re.split(' ', i)
+            if sp[0].lower() == 'get' or sp[0].lower() == 'take' and len(player.inventory) <= 3:
+                player.add_inv([sp[1]])
+                print(
+                    f'{sp[1]} added to inventory. Current inventory: {player.inventory}')
+            elif len(player.inventory) > 3:
                 ipt = input(
                     'inventory full! Would you like to drop an item? y/n?')
                 if ipt.lower() == 'y':
                     dropped = input(
                         f'select which inventory item to drop: {player.inventory}')
-                    if str(dropped).lower() in player.inventory:
-                        player.drop_item(dropped)
-                    else:
-                        ipt = input(
-                            f'shaky fingers failed you. Please enter a correct item to drop: {player.inventory}')
-                        # for val in player.inventory:
-                        #     print(str(ip) == str(val), ip, val)
-                        while str(ipt) not in player.inventory:
-                            print(type(ipt))
-                            ipt = input(
-                                f'please select a valid item to drop: {player.inventory}')
-                        player.drop_item(str(ip))
-
+                    drop_item(dropped)
         decision()
 
 
