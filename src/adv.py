@@ -97,12 +97,31 @@ def game():
         user = room[x]
         player.visit_room()
         player.update_room(x)
-        print(player, user.item)
+        print(player, user.inventory)
 
         def decision():
-            i = input('Loot found in room! Pick up loot? y/m')
-            if i.lower() == 'y':
-                player.add_inv(user.item)
+            i = input('Loot found in room! Pick up loot? y/n')
+            if i.lower() == 'y' and len(player.inventory) < 6:
+                player.add_inv([u for u in user.inventory])
+            elif len(player.inventory) > 5:
+                ipt = input(
+                    'inventory full! Would you like to drop an item? y/n?')
+                if ipt.lower() == 'y':
+                    dropped = input(
+                        f'select which inventory item to drop: {player.inventory}')
+                    if str(dropped).lower() in player.inventory:
+                        player.drop_item(dropped)
+                    else:
+                        ipt = input(
+                            f'shaky fingers failed you. Please enter a correct item to drop: {player.inventory}')
+                        # for val in player.inventory:
+                        #     print(str(ip) == str(val), ip, val)
+                        while str(ipt) not in player.inventory:
+                            print(type(ipt))
+                            ipt = input(
+                                f'please select a valid item to drop: {player.inventory}')
+                        player.drop_item(str(ip))
+
         decision()
 
 

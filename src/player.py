@@ -16,5 +16,8 @@ class Player(object):
         self.room = room
 
     def add_inv(self, loot):
-        self.inventory = self.inventory + [loot]
+        self.inventory = self.inventory + loot
         print(self.inventory)
+
+    def drop_item(self, item):
+        self.iventory = self.inventory.remove(item)

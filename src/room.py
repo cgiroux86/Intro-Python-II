@@ -3,14 +3,15 @@
 from item import Item
 import random
 items = ['knife', 'sword', 'water', 'gun', 'painkiller',
-         'bandage', 'cellphone', 'canned goods']
+         'bandage', 'cellphone', 'canned goods', 'treasure chest']
 
 
 class Room(object):
     def __init__(self, name, desc):
         self.name = name
         self.desc = desc
-        self.item = Item(random.choice(items))
+        self.inventory = [Item(x) for x in random.choices(
+            items, k=random.choice([1, 2, 3]))] if random.choice([0, 1]) == 0 else None
 
     def __str__(self):
         return f'name: {self.name}, desc: {self.desc}'
